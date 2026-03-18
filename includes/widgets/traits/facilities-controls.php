@@ -1,9 +1,13 @@
 <?php
+namespace JelloPoint\AccommodationFacilities\Widgets\Traits;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-trait JPAF_Facilities_Controls {
+use Elementor\Controls_Manager;
+
+trait Facilities_Controls {
 
 	protected function register_content_controls() {
 
@@ -11,7 +15,7 @@ trait JPAF_Facilities_Controls {
 			'section_content',
 			[
 				'label' => __( 'Content', 'jellopoint-accommodation-facilities' ),
-				'tab'   => \Elementor\Controls_Manager::TAB_CONTENT,
+				'tab'   => Controls_Manager::TAB_CONTENT,
 			]
 		);
 
@@ -19,7 +23,7 @@ trait JPAF_Facilities_Controls {
 			'source_type',
 			[
 				'label'   => __( 'Source Type', 'jellopoint-accommodation-facilities' ),
-				'type'    => \Elementor\Controls_Manager::SELECT,
+				'type'    => Controls_Manager::SELECT,
 				'default' => 'manual',
 				'options' => [
 					'manual' => __( 'Manual Selection', 'jellopoint-accommodation-facilities' ),
@@ -32,7 +36,7 @@ trait JPAF_Facilities_Controls {
 			'facility_group',
 			[
 				'label'       => __( 'Select Group', 'jellopoint-accommodation-facilities' ),
-				'type'        => \Elementor\Controls_Manager::SELECT2,
+				'type'        => Controls_Manager::SELECT2,
 				'options'     => $this->jpaf_get_group_options(),
 				'label_block' => true,
 				'condition'   => [
@@ -45,7 +49,7 @@ trait JPAF_Facilities_Controls {
 			'facilities',
 			[
 				'label'       => __( 'Facilities', 'jellopoint-accommodation-facilities' ),
-				'type'        => \Elementor\Controls_Manager::SELECT2,
+				'type'        => Controls_Manager::SELECT2,
 				'multiple'    => true,
 				'options'     => $this->jpaf_get_facility_options(),
 				'label_block' => true,
@@ -59,7 +63,7 @@ trait JPAF_Facilities_Controls {
 			'layout',
 			[
 				'label'   => __( 'Layout', 'jellopoint-accommodation-facilities' ),
-				'type'    => \Elementor\Controls_Manager::SELECT,
+				'type'    => Controls_Manager::SELECT,
 				'default' => 'grid',
 				'options' => [
 					'grid' => __( 'Grid', 'jellopoint-accommodation-facilities' ),
@@ -72,7 +76,7 @@ trait JPAF_Facilities_Controls {
 			'columns',
 			[
 				'label'          => __( 'Columns', 'jellopoint-accommodation-facilities' ),
-				'type'           => \Elementor\Controls_Manager::SELECT,
+				'type'           => Controls_Manager::SELECT,
 				'default'        => '3',
 				'tablet_default' => '2',
 				'mobile_default' => '1',
@@ -97,7 +101,7 @@ trait JPAF_Facilities_Controls {
 			'show_description',
 			[
 				'label'        => __( 'Show Description', 'jellopoint-accommodation-facilities' ),
-				'type'         => \Elementor\Controls_Manager::SWITCHER,
+				'type'         => Controls_Manager::SWITCHER,
 				'label_on'     => __( 'Show', 'jellopoint-accommodation-facilities' ),
 				'label_off'    => __( 'Hide', 'jellopoint-accommodation-facilities' ),
 				'return_value' => 'yes',
@@ -109,12 +113,12 @@ trait JPAF_Facilities_Controls {
 			'order_by',
 			[
 				'label'   => __( 'Order', 'jellopoint-accommodation-facilities' ),
-				'type'    => \Elementor\Controls_Manager::SELECT,
+				'type'    => Controls_Manager::SELECT,
 				'default' => 'selection',
 				'options' => [
-					'selection' => __( 'Selection Order', 'jellopoint-accommodation-facilities' ),
-					'admin'     => __( 'Admin Sort Order', 'jellopoint-accommodation-facilities' ),
-					'alphabetic'=> __( 'Alphabetical', 'jellopoint-accommodation-facilities' ),
+					'selection'  => __( 'Selection Order', 'jellopoint-accommodation-facilities' ),
+					'admin'      => __( 'Admin Sort Order', 'jellopoint-accommodation-facilities' ),
+					'alphabetic' => __( 'Alphabetical', 'jellopoint-accommodation-facilities' ),
 				],
 			]
 		);
@@ -123,7 +127,7 @@ trait JPAF_Facilities_Controls {
 			'icon_position',
 			[
 				'label'   => __( 'Icon Position', 'jellopoint-accommodation-facilities' ),
-				'type'    => \Elementor\Controls_Manager::SELECT,
+				'type'    => Controls_Manager::SELECT,
 				'default' => 'left',
 				'options' => [
 					'left' => __( 'Left', 'jellopoint-accommodation-facilities' ),
@@ -138,11 +142,11 @@ trait JPAF_Facilities_Controls {
 	protected function jpaf_get_facility_options() {
 		$options = [];
 
-		if ( ! class_exists( 'JPAF_Facilities_Store' ) ) {
+		if ( ! class_exists( '\JelloPoint\AccommodationFacilities\Data\Facilities_Store' ) ) {
 			return $options;
 		}
 
-		$items = JPAF_Facilities_Store::get_active();
+		$items = \JelloPoint\AccommodationFacilities\Data\Facilities_Store::get_active();
 
 		if ( empty( $items ) || ! is_array( $items ) ) {
 			return $options;
@@ -162,11 +166,11 @@ trait JPAF_Facilities_Controls {
 	protected function jpaf_get_group_options() {
 		$options = [];
 
-		if ( ! class_exists( 'JPAF_Facility_Groups_Store' ) ) {
+		if ( ! class_exists( '\JelloPoint\AccommodationFacilities\Data\Facility_Groups_Store' ) ) {
 			return $options;
 		}
 
-		$groups = JPAF_Facility_Groups_Store::get_active();
+		$groups = \JelloPoint\AccommodationFacilities\Data\Facility_Groups_Store::get_active();
 
 		if ( empty( $groups ) || ! is_array( $groups ) ) {
 			return $options;
