@@ -135,6 +135,7 @@ trait JPAF_Facilities_Controls {
 		$this->end_controls_section();
 	}
 
+	
 	protected function jpaf_get_facility_options() {
 		$options = [];
 
