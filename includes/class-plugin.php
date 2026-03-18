@@ -58,6 +58,9 @@ class Plugin {
 		if ( ! wp_style_is( 'jpaf-facilities', 'registered' ) ) {
 			self::register_assets();
 		}
+
+		// Important: Dashicons are not reliably available on the frontend unless explicitly enqueued.
+		wp_enqueue_style( 'dashicons' );
 	}
 
 	public static function register_elementor_category( $elements_manager ) : void {
