@@ -2,195 +2,78 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
-
-/**
- * Expected variables:
- * - $groups
- * - $current_group
- * - $facilities
- * - $editing
- */
-
-$groups        = isset( $groups ) && is_array( $groups ) ? $groups : [];
-$facilities    = isset( $facilities ) && is_array( $facilities ) ? $facilities : [];
-$current_group = isset( $current_group ) && is_array( $current_group ) ? $current_group : [];
-$editing       = ! empty( $editing );
-
-$group_id          = ! empty( $current_group['id'] ) ? $current_group['id'] : '';
-$group_label       = ! empty( $current_group['label'] ) ? $current_group['label'] : '';
-$group_description = ! empty( $current_group['description'] ) ? $current_group['description'] : '';
-$group_sort_order  = isset( $current_group['sort_order'] ) ? (int) $current_group['sort_order'] : 10;
-$group_active      = isset( $current_group['active'] ) ? (int) $current_group['active'] : 1;
-$selected_ids      = ! empty( $current_group['facility_ids'] ) && is_array( $current_group['facility_ids'] ) ? $current_group['facility_ids'] : [];
-
+$editing = ! empty( $edit_item['id'] );
 ?>
-<div class="wrap jpaf-admin-page jpaf-admin-page--groups">
-	<h1 class="wp-heading-inline"><?php esc_html_e( 'Facility Groups', 'jellopoint-accommodation-facilities' ); ?></h1>
+<div class="wrap jpaf-admin-wrap">
+	<div class="jpaf-admin-header">
+		<div>
+			<h1><?php esc_html_e( 'Facility Groups', 'jellopoint-accommodation-facilities' ); ?></h1>
+			<p><?php esc_html_e( 'Create reusable groups of facilities and call those groups directly from the Elementor widget.', 'jellopoint-accommodation-facilities' ); ?></p>
+		</div>
+	</div>
 
-	<?php if ( $editing ) : ?>
-		<a href="<?php echo esc_url( admin_url( 'admin.php?page=jpaf-facility-groups' ) ); ?>" class="page-title-action">
-			<?php esc_html_e( 'Add New Group', 'jellopoint-accommodation-facilities' ); ?>
-		</a>
+	<?php if ( 'added' === $notice ) : ?>
+		<div class="notice notice-success is-dismissible"><p><?php esc_html_e( 'Facility group added.', 'jellopoint-accommodation-facilities' ); ?></p></div>
+	<?php elseif ( 'updated' === $notice ) : ?>
+		<div class="notice notice-success is-dismissible"><p><?php esc_html_e( 'Facility group updated.', 'jellopoint-accommodation-facilities' ); ?></p></div>
+	<?php elseif ( 'deleted' === $notice ) : ?>
+		<div class="notice notice-success is-dismissible"><p><?php esc_html_e( 'Facility group deleted.', 'jellopoint-accommodation-facilities' ); ?></p></div>
+	<?php elseif ( 'missing_label' === $notice ) : ?>
+		<div class="notice notice-error is-dismissible"><p><?php esc_html_e( 'Please enter a group name.', 'jellopoint-accommodation-facilities' ); ?></p></div>
 	<?php endif; ?>
 
-	<hr class="wp-header-end">
-
-	<div class="jpaf-admin-grid" style="display:grid;grid-template-columns:minmax(320px,420px) 1fr;gap:24px;align-items:start;">
-		<div class="jpaf-admin-card jpaf-admin-card--form" style="background:#fff;border:1px solid #dcdcde;border-radius:8px;padding:20px;">
-			<h2 style="margin-top:0;">
-				<?php echo $editing ? esc_html__( 'Edit Group', 'jellopoint-accommodation-facilities' ) : esc_html__( 'Add Group', 'jellopoint-accommodation-facilities' ); ?>
-			</h2>
-
-			<form method="post">
-				<?php wp_nonce_field( 'jpaf_save_group', 'jpaf_group_nonce' ); ?>
-				<input type="hidden" name="jpaf_action" value="<?php echo $editing ? 'update_group' : 'add_group'; ?>">
-				<?php if ( $editing ) : ?>
-					<input type="hidden" name="group_id" value="<?php echo esc_attr( $group_id ); ?>">
-				<?php endif; ?>
-
-				<table class="form-table" role="presentation">
-					<tbody>
-						<tr>
-							<th scope="row">
-								<label for="jpaf-group-label"><?php esc_html_e( 'Group Name', 'jellopoint-accommodation-facilities' ); ?></label>
-							</th>
-							<td>
-								<input type="text" id="jpaf-group-label" name="label" class="regular-text" value="<?php echo esc_attr( $group_label ); ?>" required>
-							</td>
-						</tr>
-
-						<tr>
-							<th scope="row">
-								<label for="jpaf-group-description"><?php esc_html_e( 'Description', 'jellopoint-accommodation-facilities' ); ?></label>
-							</th>
-							<td>
-								<textarea id="jpaf-group-description" name="description" class="large-text" rows="3"><?php echo esc_textarea( $group_description ); ?></textarea>
-							</td>
-						</tr>
-
-						<tr>
-							<th scope="row">
-								<label for="jpaf-group-sort-order"><?php esc_html_e( 'Sort Order', 'jellopoint-accommodation-facilities' ); ?></label>
-							</th>
-							<td>
-								<input type="number" id="jpaf-group-sort-order" name="sort_order" class="small-text" value="<?php echo esc_attr( $group_sort_order ); ?>">
-							</td>
-						</tr>
-
-						<tr>
-							<th scope="row"><?php esc_html_e( 'Active', 'jellopoint-accommodation-facilities' ); ?></th>
-							<td>
-								<label>
-									<input type="checkbox" name="active" value="1" <?php checked( $group_active, 1 ); ?>>
-									<?php esc_html_e( 'Enabled', 'jellopoint-accommodation-facilities' ); ?>
-								</label>
-							</td>
-						</tr>
-
-						<tr>
-							<th scope="row"><?php esc_html_e( 'Select Facilities', 'jellopoint-accommodation-facilities' ); ?></th>
-							<td>
-								<div class="jpaf-group-facility-list" style="max-height:420px;overflow:auto;border:1px solid #dcdcde;border-radius:6px;background:#fff;">
-									<?php if ( empty( $facilities ) ) : ?>
-										<p style="padding:12px;margin:0;"><?php esc_html_e( 'No facilities found.', 'jellopoint-accommodation-facilities' ); ?></p>
-									<?php else : ?>
-										<?php foreach ( $facilities as $facility ) : ?>
-											<?php
-											$facility_id    = ! empty( $facility['id'] ) ? $facility['id'] : '';
-											$facility_label = ! empty( $facility['label'] ) ? $facility['label'] : $facility_id;
-
-											if ( '' === $facility_id ) {
-												continue;
-											}
-
-											$is_checked = in_array( $facility_id, $selected_ids, true );
-											?>
-											<label class="jpaf-group-facility-row" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-bottom:1px solid #f0f0f1;cursor:pointer;">
-												<input type="checkbox" name="facility_ids[]" value="<?php echo esc_attr( $facility_id ); ?>" <?php checked( $is_checked ); ?> style="margin:0;">
-												<span class="jpaf-group-facility-icon" style="width:24px;height:24px;display:inline-flex;align-items:center;justify-content:center;flex:0 0 24px;">
-													<?php
-													if ( function_exists( 'jpaf_get_icon_html' ) ) {
-														echo jpaf_get_icon_html( $facility ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-													}
-													?>
-												</span>
-												<span class="jpaf-group-facility-label" style="line-height:1.3;">
-													<?php echo esc_html( $facility_label ); ?>
-												</span>
-											</label>
-										<?php endforeach; ?>
-									<?php endif; ?>
-								</div>
-								<p class="description" style="margin-top:8px;">
-									<?php esc_html_e( 'Choose the facilities that belong to this group.', 'jellopoint-accommodation-facilities' ); ?>
-								</p>
-							</td>
-						</tr>
-					</tbody>
-				</table>
-
-				<p class="submit" style="margin-bottom:0;">
-					<button type="submit" class="button button-primary">
-						<?php echo $editing ? esc_html__( 'Update Group', 'jellopoint-accommodation-facilities' ) : esc_html__( 'Add Group', 'jellopoint-accommodation-facilities' ); ?>
-					</button>
-
-					<?php if ( $editing ) : ?>
-						<a href="<?php echo esc_url( admin_url( 'admin.php?page=jpaf-facility-groups' ) ); ?>" class="button">
-							<?php esc_html_e( 'Cancel', 'jellopoint-accommodation-facilities' ); ?>
-						</a>
-					<?php endif; ?>
-				</p>
+	<div class="jpaf-admin-grid jpaf-admin-grid--wide-left">
+		<div class="jpaf-card jpaf-form-card<?php echo $editing ? ' is-editing' : ''; ?>">
+			<div class="jpaf-card-header"><div><h2><?php echo $editing ? esc_html__( 'Edit Facility Group', 'jellopoint-accommodation-facilities' ) : esc_html__( 'Add Facility Group', 'jellopoint-accommodation-facilities' ); ?></h2></div></div>
+			<form method="post" action="<?php echo esc_url( admin_url( 'admin.php?page=jpaf-facility-groups' ) ); ?>" class="jpaf-facility-form">
+				<?php wp_nonce_field( 'jpaf_save_facility_group' ); ?>
+				<input type="hidden" name="page" value="jpaf-facility-groups" />
+				<input type="hidden" name="jpaf_action" value="<?php echo $editing ? 'update' : 'add'; ?>" />
+				<input type="hidden" name="existing_id" value="<?php echo esc_attr( $edit_item['id'] ); ?>" />
+				<input type="hidden" name="group_id" value="<?php echo esc_attr( $edit_item['id'] ); ?>" />
+				<div class="jpaf-form-grid">
+					<div class="jpaf-field jpaf-field--full"><label for="jpaf-group-label"><?php esc_html_e( 'Group name', 'jellopoint-accommodation-facilities' ); ?></label><input id="jpaf-group-label" name="label" type="text" value="<?php echo esc_attr( $edit_item['label'] ); ?>" required /></div>
+					<div class="jpaf-field jpaf-field--full"><label for="jpaf-group-description"><?php esc_html_e( 'Description', 'jellopoint-accommodation-facilities' ); ?></label><textarea id="jpaf-group-description" name="description" rows="4"><?php echo esc_textarea( $edit_item['description'] ); ?></textarea></div>
+					<div class="jpaf-field"><label for="jpaf-group-sort-order"><?php esc_html_e( 'Sort order', 'jellopoint-accommodation-facilities' ); ?></label><input id="jpaf-group-sort-order" name="sort_order" type="number" value="<?php echo esc_attr( (string) $edit_item['sort_order'] ); ?>" /></div>
+					<div class="jpaf-field jpaf-field--full"><label class="jpaf-checkbox-label"><input name="active" type="checkbox" value="1" <?php checked( ! empty( $edit_item['active'] ) ); ?> /> <?php esc_html_e( 'Available in the widget', 'jellopoint-accommodation-facilities' ); ?></label></div>
+					<div class="jpaf-field jpaf-field--full">
+						<label for="jpaf-facility-category-filter"><?php esc_html_e( 'Filter facilities by icon category', 'jellopoint-accommodation-facilities' ); ?></label>
+						<select id="jpaf-facility-category-filter" class="jpaf-facility-category-filter"><option value=""><?php esc_html_e( 'All icon categories', 'jellopoint-accommodation-facilities' ); ?></option><?php foreach ( $categories as $category ) : ?><option value="<?php echo esc_attr( $category['id'] ); ?>" <?php selected( $facility_category, $category['id'] ); ?>><?php echo esc_html( $category['label'] ); ?></option><?php endforeach; ?></select>
+					</div>
+					<div class="jpaf-field jpaf-field--full">
+						<label><?php esc_html_e( 'Select facilities', 'jellopoint-accommodation-facilities' ); ?></label>
+						<div class="jpaf-checkbox-list">
+							<?php if ( empty( $facility_map ) ) : ?>
+								<p><?php esc_html_e( 'No facilities available yet.', 'jellopoint-accommodation-facilities' ); ?></p>
+							<?php else : foreach ( $facility_map as $facility ) : $cat = isset( $facility['category_id'] ) ? (string) $facility['category_id'] : ''; ?>
+								<label class="jpaf-checkbox-item" data-category-id="<?php echo esc_attr( $cat ); ?>"><input type="checkbox" name="facility_ids[]" value="<?php echo esc_attr( $facility['id'] ); ?>" <?php checked( in_array( $facility['id'], (array) $edit_item['facility_ids'], true ) ); ?> /> <span class="jpaf-checkbox-icon"><?php echo \JelloPoint\AccommodationFacilities\jpaf_get_icon_html( $facility ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></span> <span><?php echo esc_html( $facility['label'] ); ?></span></label>
+							<?php endforeach; endif; ?>
+						</div>
+						<p class="description"><?php esc_html_e( 'The order of the checked items is saved as the group order.', 'jellopoint-accommodation-facilities' ); ?></p>
+					</div>
+				</div>
+				<div class="jpaf-form-actions"><button type="submit" class="button button-primary"><?php echo $editing ? esc_html__( 'Save changes', 'jellopoint-accommodation-facilities' ) : esc_html__( 'Add group', 'jellopoint-accommodation-facilities' ); ?></button><?php if ( $editing ) : ?><a href="<?php echo esc_url( admin_url( 'admin.php?page=jpaf-facility-groups' ) ); ?>" class="button button-secondary"><?php esc_html_e( 'Cancel editing', 'jellopoint-accommodation-facilities' ); ?></a><?php endif; ?></div>
 			</form>
 		</div>
-
-		<div class="jpaf-admin-card jpaf-admin-card--table" style="background:#fff;border:1px solid #dcdcde;border-radius:8px;padding:20px;">
-			<h2 style="margin-top:0;"><?php esc_html_e( 'Groups Library', 'jellopoint-accommodation-facilities' ); ?></h2>
-
-			<?php if ( empty( $groups ) ) : ?>
-				<p><?php esc_html_e( 'No facility groups found yet.', 'jellopoint-accommodation-facilities' ); ?></p>
-			<?php else : ?>
-				<table class="widefat fixed striped">
-					<thead>
-						<tr>
-							<th><?php esc_html_e( 'Name', 'jellopoint-accommodation-facilities' ); ?></th>
-							<th><?php esc_html_e( 'Facilities', 'jellopoint-accommodation-facilities' ); ?></th>
-							<th><?php esc_html_e( 'Sort', 'jellopoint-accommodation-facilities' ); ?></th>
-							<th><?php esc_html_e( 'Status', 'jellopoint-accommodation-facilities' ); ?></th>
-							<th><?php esc_html_e( 'Actions', 'jellopoint-accommodation-facilities' ); ?></th>
-						</tr>
-					</thead>
-					<tbody>
-						<?php foreach ( $groups as $group ) : ?>
-							<?php
-							$item_id     = ! empty( $group['id'] ) ? $group['id'] : '';
-							$item_label  = ! empty( $group['label'] ) ? $group['label'] : $item_id;
-							$item_count  = ! empty( $group['facility_ids'] ) && is_array( $group['facility_ids'] ) ? count( $group['facility_ids'] ) : 0;
-							$item_sort   = isset( $group['sort_order'] ) ? (int) $group['sort_order'] : 0;
-							$item_active = ! empty( $group['active'] );
-
-							if ( '' === $item_id ) {
-								continue;
-							}
-							?>
-							<tr>
-								<td><strong><?php echo esc_html( $item_label ); ?></strong></td>
-								<td><?php echo esc_html( $item_count ); ?></td>
-								<td><?php echo esc_html( $item_sort ); ?></td>
-								<td><?php echo $item_active ? esc_html__( 'Active', 'jellopoint-accommodation-facilities' ) : esc_html__( 'Inactive', 'jellopoint-accommodation-facilities' ); ?></td>
-								<td>
-									<a href="<?php echo esc_url( admin_url( 'admin.php?page=jpaf-facility-groups&action=edit&id=' . rawurlencode( $item_id ) ) ); ?>">
-										<?php esc_html_e( 'Edit', 'jellopoint-accommodation-facilities' ); ?>
-									</a>
-									|
-									<a href="<?php echo esc_url( wp_nonce_url( admin_url( 'admin.php?page=jpaf-facility-groups&action=delete&id=' . rawurlencode( $item_id ) ), 'jpaf_delete_group_' . $item_id ) ); ?>" onclick="return confirm('<?php echo esc_js( __( 'Delete this group?', 'jellopoint-accommodation-facilities' ) ); ?>');">
-										<?php esc_html_e( 'Delete', 'jellopoint-accommodation-facilities' ); ?>
-									</a>
-								</td>
-							</tr>
-						<?php endforeach; ?>
-					</tbody>
-				</table>
-			<?php endif; ?>
+		<div class="jpaf-card">
+			<div class="jpaf-card-header"><div><h2><?php esc_html_e( 'Facility Groups', 'jellopoint-accommodation-facilities' ); ?></h2></div></div>
+			<table class="widefat fixed striped jpaf-library-table">
+				<thead><tr><th><?php esc_html_e( 'Name', 'jellopoint-accommodation-facilities' ); ?></th><th><?php esc_html_e( 'Description', 'jellopoint-accommodation-facilities' ); ?></th><th style="width:120px;"><?php esc_html_e( 'Facilities', 'jellopoint-accommodation-facilities' ); ?></th><th style="width:100px;"><?php esc_html_e( 'Order', 'jellopoint-accommodation-facilities' ); ?></th><th style="width:90px;"><?php esc_html_e( 'Status', 'jellopoint-accommodation-facilities' ); ?></th><th style="width:140px;"><?php esc_html_e( 'Actions', 'jellopoint-accommodation-facilities' ); ?></th></tr></thead>
+				<tbody>
+				<?php if ( empty( $items ) ) : ?>
+					<tr><td colspan="6"><?php esc_html_e( 'No groups found yet.', 'jellopoint-accommodation-facilities' ); ?></td></tr>
+				<?php else : foreach ( $items as $item ) : ?>
+					<tr>
+						<td><strong><?php echo esc_html( $item['label'] ); ?></strong><div class="description"><?php echo esc_html( $item['id'] ); ?></div></td>
+						<td><?php echo esc_html( $item['description'] ); ?></td>
+						<td><?php echo esc_html( (string) count( (array) $item['facility_ids'] ) ); ?></td>
+						<td><?php echo esc_html( (string) $item['sort_order'] ); ?></td>
+						<td><?php echo ! empty( $item['active'] ) ? '<span class="jpaf-status jpaf-status--active">' . esc_html__( 'Active', 'jellopoint-accommodation-facilities' ) . '</span>' : '<span class="jpaf-status">' . esc_html__( 'Inactive', 'jellopoint-accommodation-facilities' ) . '</span>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></td>
+						<td><a href="<?php echo esc_url( admin_url( 'admin.php?page=jpaf-facility-groups&action=edit&id=' . rawurlencode( $item['id'] ) ) ); ?>"><?php esc_html_e( 'Edit', 'jellopoint-accommodation-facilities' ); ?></a> | <a href="<?php echo esc_url( wp_nonce_url( admin_url( 'admin.php?page=jpaf-facility-groups&jpaf_action=delete&id=' . rawurlencode( $item['id'] ) ), 'jpaf_delete_facility_group' ) ); ?>" class="jpaf-delete-link"><?php esc_html_e( 'Delete', 'jellopoint-accommodation-facilities' ); ?></a></td>
+					</tr>
+				<?php endforeach; endif; ?>
+				</tbody>
+			</table>
 		</div>
 	</div>
 </div>
