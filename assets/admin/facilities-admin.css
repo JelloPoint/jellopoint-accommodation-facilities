@@ -399,3 +399,30 @@
 	font-size: 24px;
 	object-fit: contain;
 }
+.jpaf-checkbox-item {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	padding: 6px 8px;
+}
+
+.jpaf-checkbox-icon {
+	width: 24px;
+	height: 24px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.jpaf-checkbox-label-text {
+	flex: 1;
+}
+
+.jpaf-selected-drag {
+	display: none;
+	align-items: center;
+}
+
+#jpaf-selected-facilities .jpaf-selected-drag {
+	display: inline-flex;
+}

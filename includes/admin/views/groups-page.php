@@ -107,25 +107,31 @@ $editing = ! empty( $edit_item['id'] );
 									$search = strtolower( trim( (string) $facility['label'] . ' ' . (string) $facility['id'] ) );
 									?>
 									<label
-										class="jpaf-checkbox-item"
-										data-category-id="<?php echo esc_attr( $cat ); ?>"
-										data-search="<?php echo esc_attr( $search ); ?>"
-										data-facility-id="<?php echo esc_attr( $facility['id'] ); ?>"
-									>
-										<input
-											type="checkbox"
-											name="facility_ids[]"
-											value="<?php echo esc_attr( $facility['id'] ); ?>"
-											<?php checked( in_array( $facility['id'], (array) $edit_item['facility_ids'], true ) ); ?>
-										/>
-										<span class="jpaf-checkbox-icon">
-											<?php echo \JelloPoint\AccommodationFacilities\jpaf_get_icon_html( $facility ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
-										</span>
-										<span><?php echo esc_html( $facility['label'] ); ?></span>
-										<span class="jpaf-selected-drag" style="margin-left:auto;display:none;cursor:move;color:#777;">
-											<span class="dashicons dashicons-menu-alt3"></span>
-										</span>
-									</label>
+									class="jpaf-checkbox-item"
+									data-category-id="<?php echo esc_attr( $cat ); ?>"
+									data-search="<?php echo esc_attr( $search ); ?>"
+									data-facility-id="<?php echo esc_attr( $facility['id'] ); ?>"
+								>
+									<span class="jpaf-selected-drag" style="cursor:move;color:#777;margin-right:8px;">
+										<span class="dashicons dashicons-menu-alt3"></span>
+									</span>
+
+									<span class="jpaf-checkbox-icon">
+										<?php echo \JelloPoint\AccommodationFacilities\jpaf_get_icon_html( $facility ); ?>
+									</span>
+
+									<span class="jpaf-checkbox-label-text" style="flex:1;">
+										<?php echo esc_html( $facility['label'] ); ?>
+									</span>
+
+									<input
+										type="checkbox"
+										name="facility_ids[]"
+										value="<?php echo esc_attr( $facility['id'] ); ?>"
+										<?php checked( in_array( $facility['id'], (array) $edit_item['facility_ids'], true ) ); ?>
+										style="margin-left:10px;"
+									/>
+								</label>
 								<?php endforeach; ?>
 							<?php endif; ?>
 						</div>
