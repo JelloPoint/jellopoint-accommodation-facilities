@@ -238,7 +238,6 @@
 	}
 }
 
-
 .jpaf-admin-wrap .jpaf-icon-preview,
 .jpaf-admin-wrap .jpaf-icon-cell {
 	color: var(--jpaf-admin-icon-color, #2271b1);
@@ -304,7 +303,6 @@
 	height: 28px;
 }
 
-
 .jpaf-admin-wrap .jpaf-icon-preview .jpaf-facility__icon-inner,
 .jpaf-admin-wrap .jpaf-icon-cell .jpaf-facility__icon-inner {
 	width: 24px;
@@ -312,7 +310,8 @@
 }
 
 .jpaf-admin-wrap .jpaf-icon-preview .jpaf-facility__icon-inner--svg-mask,
-.jpaf-admin-wrap .jpaf-icon-cell .jpaf-facility__icon-inner--svg-mask {
+.jpaf-admin-wrap .jpaf-icon-cell .jpaf-facility__icon-inner--svg-mask,
+.jpaf-admin-wrap .jpaf-checkbox-icon .jpaf-facility__icon-inner--svg-mask {
 	background-color: currentColor;
 	-webkit-mask-repeat: no-repeat;
 	mask-repeat: no-repeat;
@@ -320,6 +319,9 @@
 	mask-position: center;
 	-webkit-mask-size: contain;
 	mask-size: contain;
+	display: inline-flex;
+	width: 24px;
+	height: 24px;
 }
 
 .jpaf-admin-wrap .jpaf-icon-preview .jpaf-facility__icon-inner {
