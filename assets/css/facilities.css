@@ -1,0 +1,128 @@
+.jpaf-facilities {
+	--jpaf-columns: 3;
+	--jpaf-column-gap: 20px;
+	--jpaf-row-gap: 16px;
+	display: grid;
+	gap: var(--jpaf-row-gap) var(--jpaf-column-gap);
+}
+
+.jpaf-layout-grid {
+	grid-template-columns: repeat(var(--jpaf-columns), minmax(0, 1fr));
+}
+
+.jpaf-layout-list {
+	grid-template-columns: 1fr;
+}
+
+.jpaf-columns-1 { --jpaf-columns: 1; }
+.jpaf-columns-2 { --jpaf-columns: 2; }
+.jpaf-columns-3 { --jpaf-columns: 3; }
+.jpaf-columns-4 { --jpaf-columns: 4; }
+
+.jpaf-facility {
+	display: flex;
+	align-items: center;
+	column-gap: 12px;
+	row-gap: 12px;
+}
+
+.jpaf-icon-top .jpaf-facility {
+	flex-direction: column;
+	align-items: flex-start;
+}
+
+.jpaf-facility__icon {
+	--jpaf-icon-size: 24px;
+	width: calc(var(--jpaf-icon-size) + 16px);
+	height: calc(var(--jpaf-icon-size) + 16px);
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	flex: 0 0 auto;
+	border-radius: 999px;
+	line-height: 1;
+}
+
+.jpaf-facility__icon-inner,
+.jpaf-facility__icon .dashicons,
+.jpaf-facility__icon i {
+	font-size: var(--jpaf-icon-size);
+	width: var(--jpaf-icon-size);
+	height: var(--jpaf-icon-size);
+	line-height: var(--jpaf-icon-size);
+}
+
+.jpaf-facility__content {
+	min-width: 0;
+}
+
+.jpaf-facility__label {
+	font-weight: 600;
+	line-height: 1.3;
+}
+
+.jpaf-facility__description {
+	margin-top: 4px;
+	font-size: .92em;
+	line-height: 1.5;
+	opacity: .85;
+}
+
+@media (max-width: 1024px) {
+	.jpaf-layout-grid.jpaf-columns-4,
+	.jpaf-layout-grid.jpaf-columns-3 {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+}
+
+@media (max-width: 767px) {
+	.jpaf-layout-grid {
+		grid-template-columns: 1fr;
+	}
+}
+
+
+.jpaf-facility__icon-inner--svg {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: var(--jpaf-icon-size);
+	height: var(--jpaf-icon-size);
+	line-height: 1;
+	flex: 0 0 var(--jpaf-icon-size);
+}
+
+.jpaf-facility__icon-inner--svg svg,
+.jpaf-facility__icon-inner--svg img {
+	width: 100%;
+	height: 100%;
+	display: block;
+}
+
+.jpaf-facility__icon-inner--svg svg {
+	overflow: visible;
+}
+
+.jpaf-facility__icon-inner--svg img {
+	object-fit: contain;
+}
+
+
+
+.jpaf-facility__icon {
+	color: currentColor;
+}
+
+.jpaf-facility__icon-inner--svg-mask {
+	display: inline-block;
+	width: var(--jpaf-icon-size);
+	height: var(--jpaf-icon-size);
+	flex: 0 0 var(--jpaf-icon-size);
+	background-color: currentColor;
+	-webkit-mask-repeat: no-repeat;
+	mask-repeat: no-repeat;
+	-webkit-mask-position: center;
+	mask-position: center;
+	-webkit-mask-size: contain;
+	mask-size: contain;
+}
