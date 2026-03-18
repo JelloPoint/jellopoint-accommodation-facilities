@@ -400,10 +400,16 @@
 	object-fit: contain;
 }
 .jpaf-checkbox-item {
-	display: flex;
-	align-items: center;
+	display: flex !important;
+	align-items: center !important;
 	gap: 10px;
 	padding: 6px 8px;
+	width: 100%;
+}
+
+.jpaf-checkbox-item input[type="checkbox"] {
+	margin: 0 0 0 10px !important;
+	flex-shrink: 0;
 }
 
 .jpaf-checkbox-icon {
@@ -412,15 +418,18 @@
 	display: flex;
 	align-items: center;
 	justify-content: center;
+	flex-shrink: 0;
 }
 
 .jpaf-checkbox-label-text {
 	flex: 1;
+	display: block;
 }
 
 .jpaf-selected-drag {
 	display: none;
 	align-items: center;
+	flex-shrink: 0;
 }
 
 #jpaf-selected-facilities .jpaf-selected-drag {
