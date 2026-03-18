@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<wpml-config>
+	<admin-texts>
+		<key name="jpaf_facilities">
+			<key name="*">
+				<key name="label" />
+				<key name="description" />
+			</key>
+		</key>
+	</admin-texts>
+</wpml-config>
